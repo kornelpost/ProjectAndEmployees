@@ -20,8 +20,30 @@ namespace ProjectAndEmployees.Controllers
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, string sortOrder)
         {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            var employees = from s in _context.Employees
+                            select s;
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    employees = employees.OrderByDescending(s => s.LastName);
+                    break;
+                case "Date":
+                    employees = employees.OrderBy(s => s.ReleaseDate);
+                    break;
+                case "date_desc":
+                    employees = employees.OrderByDescending(s => s.ReleaseDate);
+                    break;
+                default:
+                    employees = employees.OrderBy(s => s.LastName);
+                    break;
+            }
+
+            /*
             var employees = from m in _context.Employees
                          select m;
 
@@ -29,8 +51,9 @@ namespace ProjectAndEmployees.Controllers
             {
                 employees = employees.Where(s => s.FirstName.Contains(searchString));
             }
+            */
 
-            return View(await employees.ToListAsync());
+            return View(await employees.AsNoTracking().ToListAsync());
         }
 
         // GET: Employees/Details/5
