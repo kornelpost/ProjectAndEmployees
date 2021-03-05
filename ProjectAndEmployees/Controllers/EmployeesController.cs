@@ -20,12 +20,30 @@ namespace ProjectAndEmployees.Controllers
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index(string searchString, string sortOrder)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
+
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             var employees = from s in _context.Employees
                             select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                employees = employees.Where(s => s.LastName.Contains(searchString)
+                                       || s.FirstName.Contains(searchString));
+            }
 
             switch (sortOrder)
             {
@@ -42,18 +60,8 @@ namespace ProjectAndEmployees.Controllers
                     employees = employees.OrderBy(s => s.LastName);
                     break;
             }
-
-            /*
-            var employees = from m in _context.Employees
-                         select m;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                employees = employees.Where(s => s.FirstName.Contains(searchString));
-            }
-            */
-
-            return View(await employees.AsNoTracking().ToListAsync());
+            int pageSize = 3;
+            return View(await PaginatedList<Employees>.CreateAsync(employees.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Employees/Details/5
