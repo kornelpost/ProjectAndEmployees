@@ -11,6 +11,15 @@ namespace ProjectAndEmployees.Data
     {
         public ProjectAndEmployeesContext(DbContextOptions<ProjectAndEmployeesContext> options) : base(options) { }
         public DbSet<Employees> Employees { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Project>().ToTable("Project");
+            modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
+            modelBuilder.Entity<Employees>().ToTable("Employee");
+        }
     }
 }
 

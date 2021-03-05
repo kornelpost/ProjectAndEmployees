@@ -26,7 +26,6 @@ namespace ProjectAndEmployees.Controllers
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
-            
 
             if (searchString != null)
             {
@@ -73,6 +72,9 @@ namespace ProjectAndEmployees.Controllers
             }
 
             var employees = await _context.Employees
+                .Include(s => s.Enrollments)
+                .ThenInclude(e => e.Project)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employees == null)
             {

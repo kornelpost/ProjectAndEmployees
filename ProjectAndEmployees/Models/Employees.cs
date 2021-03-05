@@ -25,5 +25,7 @@ namespace ProjectAndEmployees.Models
         [Display(Name = "Join Date")]
         [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; }
+
+        public ICollection<Enrollment> Enrollments { get; set; }
     }
 }
