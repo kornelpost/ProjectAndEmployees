@@ -20,9 +20,17 @@ namespace ProjectAndEmployees.Controllers
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Employees.ToListAsync());
+            var employees = from m in _context.Employees
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                employees = employees.Where(s => s.FirstName.Contains(searchString));
+            }
+
+            return View(await employees.ToListAsync());
         }
 
         // GET: Employees/Details/5
