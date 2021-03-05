@@ -170,3 +170,8 @@ C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0
 C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0\Razor\Views\Employees\Details.cshtml.g.cs
 C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0\Razor\Views\Employees\Edit.cshtml.g.cs
 C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0\Razor\Views\Employees\Index.cshtml.g.cs
+C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0\Razor\Views\Projects\Create.cshtml.g.cs
+C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0\Razor\Views\Projects\Delete.cshtml.g.cs
+C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0\Razor\Views\Projects\Details.cshtml.g.cs
+C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0\Razor\Views\Projects\Edit.cshtml.g.cs
+C:\VisualStudioProjects\ProjectAndEmployees\ProjectAndEmployees\obj\Debug\net5.0\Razor\Views\Projects\Index.cshtml.g.cs
