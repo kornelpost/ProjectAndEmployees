@@ -26,7 +26,7 @@ namespace ProjectAndEmployees.Controllers
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewData["CurrentFilter"] = searchString;
+            
 
             if (searchString != null)
             {
@@ -36,7 +36,7 @@ namespace ProjectAndEmployees.Controllers
             {
                 searchString = currentFilter;
             }
-
+            ViewData["CurrentFilter"] = searchString;
             var employees = from s in _context.Employees
                             select s;
             if (!String.IsNullOrEmpty(searchString))
