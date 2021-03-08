@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectAndEmployees.Data;
 using ProjectAndEmployees.Models;
+using ProjectAndEmployees.Models.EmployeeProjectViewModels;
 
 namespace ProjectAndEmployees.Controllers
 {
@@ -19,8 +20,28 @@ namespace ProjectAndEmployees.Controllers
             _context = context;
         }
 
+
+        public async Task<IActionResult> Index(int? id)
+        {
+            var viewModel = new EmployeeProjectIndexData();
+            viewModel.Projects = await _context.Projects
+                    .Include(s => s.Enrollments)
+                        .ThenInclude(s => s.Employee)
+                        .AsNoTracking()
+                            .OrderBy(i => i.Title)
+                            .ToListAsync();
+            if (id != null)
+            {
+                ViewData["ProjectID"] = id.Value;
+                Project project = viewModel.Projects.Where(
+                    i => i.ProjectId == id.Value).Single();
+            }
+            return View(viewModel);
+        }
+
+        /*
         // GET: Projects
-        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber, int? id)
         {
 
             ViewData["CurrentSort"] = sortOrder;
@@ -55,6 +76,7 @@ namespace ProjectAndEmployees.Controllers
             int pageSize = 3;
             return View(await PaginatedList<Project>.CreateAsync(projects.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+        */
 
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
