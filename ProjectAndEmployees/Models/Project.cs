@@ -14,5 +14,7 @@ namespace ProjectAndEmployees.Models
         public string Description { get; set; }
 
         public ICollection<Enrollment> Enrollments { get; set; }
+        public IEnumerable<Employees> Employees { get; set; }
+        
     }
 }

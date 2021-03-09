@@ -27,5 +27,7 @@ namespace ProjectAndEmployees.Models
         public DateTime ReleaseDate { get; set; }
 
         public ICollection<Enrollment> Enrollments { get; set; }
+        public IEnumerable<Project> Projects { get; set; }
+
     }
 }
