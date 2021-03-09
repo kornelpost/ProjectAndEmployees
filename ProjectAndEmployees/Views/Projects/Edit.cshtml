@@ -37,3 +37,31 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <table>
+            <tr>
+                @{
+                    int cnt = 0;
+                    List<ProjectAndEmployees.Models.CompanyViewModels.AssignedEmployeeData> employees = ViewBag.Employee;
+
+                    foreach (var employee in employees)
+                    {
+                        if (cnt++ % 3 == 0)
+                        {
+                        @:</tr><tr>
+                        }
+                        @:<td>
+                            <input type="checkbox"
+                                   name="selectedEmployees"
+                                   value="@employee.EmployeeId"
+                                   @(Html.Raw(employee.Assigned ? "checked=\"checked\"" : "")) />
+                            @employee.FirstName @:  @employee.LastName
+                        @:</td>
+                    }
+                @:</tr>
+                }
+            </table>
+        </div>
+    </div>

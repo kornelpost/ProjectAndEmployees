@@ -10,8 +10,8 @@ using ProjectAndEmployees.Data;
 namespace ProjectAndEmployees.Migrations
 {
     [DbContext(typeof(ProjectAndEmployeesContext))]
-    [Migration("20210305123146_Init")]
-    partial class Init
+    [Migration("20210309154141_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace ProjectAndEmployees.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("EmployeesProject", b =>
+                {
+                    b.Property<int>("EmployeesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectsProjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EmployeesId", "ProjectsProjectId");
+
+                    b.HasIndex("ProjectsProjectId");
+
+                    b.ToTable("EmployeesProject");
+                });
 
             modelBuilder.Entity("ProjectAndEmployees.Models.Employees", b =>
                 {
@@ -82,6 +97,21 @@ namespace ProjectAndEmployees.Migrations
                     b.HasKey("ProjectId");
 
                     b.ToTable("Project");
+                });
+
+            modelBuilder.Entity("EmployeesProject", b =>
+                {
+                    b.HasOne("ProjectAndEmployees.Models.Employees", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectAndEmployees.Models.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectsProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProjectAndEmployees.Models.Enrollment", b =>

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProjectAndEmployees.Migrations
 {
-    public partial class Init : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -36,6 +36,30 @@ namespace ProjectAndEmployees.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmployeesProject",
+                columns: table => new
+                {
+                    EmployeesId = table.Column<int>(type: "int", nullable: false),
+                    ProjectsProjectId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeesProject", x => new { x.EmployeesId, x.ProjectsProjectId });
+                    table.ForeignKey(
+                        name: "FK_EmployeesProject_Employee_EmployeesId",
+                        column: x => x.EmployeesId,
+                        principalTable: "Employee",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmployeesProject_Project_ProjectsProjectId",
+                        column: x => x.ProjectsProjectId,
+                        principalTable: "Project",
+                        principalColumn: "ProjectId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Enrollment",
                 columns: table => new
                 {
@@ -62,6 +86,11 @@ namespace ProjectAndEmployees.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeesProject_ProjectsProjectId",
+                table: "EmployeesProject",
+                column: "ProjectsProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Enrollment_EmployeeId",
                 table: "Enrollment",
                 column: "EmployeeId");
@@ -74,6 +103,9 @@ namespace ProjectAndEmployees.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EmployeesProject");
+
             migrationBuilder.DropTable(
                 name: "Enrollment");
 
