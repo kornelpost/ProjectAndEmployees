@@ -21,7 +21,7 @@ namespace ProjectAndEmployees.Controllers
         }
 
         // GET: Projects
-        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber, int? id)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
 
             ViewData["CurrentSort"] = sortOrder;
@@ -101,6 +101,9 @@ namespace ProjectAndEmployees.Controllers
             return View(project);
         }
 
+
+
+
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -117,29 +120,27 @@ namespace ProjectAndEmployees.Controllers
             {
                 return NotFound();
             }
-            PopulateAssignedCourseData(project);
+            PopulateAssignedEmployeeData(project);
             return View(project);
         }
 
-        private void PopulateAssignedCourseData(Project project)
+        private void PopulateAssignedEmployeeData(Project project)
         {
-            var allEmployee = _context.Employees;
-            var projectEmployee = new HashSet<int>(project.Enrollments.Select(c => c.EmployeeId));
+            var allEmployees = _context.Employees;
+            var projectEmployees = new HashSet<int>(project.Enrollments.Select(c => c.EmployeeId));
             var viewModel = new List<AssignedEmployeeData>();
-            foreach (var employee in allEmployee)
+            foreach (var employee in allEmployees)
             {
                 viewModel.Add(new AssignedEmployeeData
                 {
                     EmployeeId = employee.Id,
                     FirstName = employee.FirstName,
                     LastName = employee.LastName,
-                    Assigned = projectEmployee.Contains(employee.Id)
+                    Assigned = projectEmployees.Contains(employee.Id)
                 });
             }
-            ViewData["Employee"] = viewModel;
+            ViewData["Employees"] = viewModel;
         }
-
-
 
         // POST: Projects/Edit/5
         [HttpPost]
@@ -152,16 +153,16 @@ namespace ProjectAndEmployees.Controllers
             }
 
             var projectToUpdate = await _context.Projects
-            .Include(i => i.Enrollments)
-                .ThenInclude(i => i.Employee)
-            .FirstOrDefaultAsync(m => m.ProjectId == id);
+                .Include(i => i.Enrollments)
+                    .ThenInclude(i => i.Employee)
+                .FirstOrDefaultAsync(m => m.ProjectId == id);
 
             if (await TryUpdateModelAsync<Project>(
                 projectToUpdate,
                 "",
-                i => i.Title, i => i.ProjectId, i => i.Description))
+                i => i.ProjectId, i => i.Title, i => i.Description))
             {
-                UpdateProjectEmployee(selectedEmployee, projectToUpdate);
+                UpdateProjectEmployees(selectedEmployee, projectToUpdate);
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -175,12 +176,12 @@ namespace ProjectAndEmployees.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            UpdateProjectEmployee(selectedEmployee, projectToUpdate);
-            PopulateAssignedCourseData(projectToUpdate);
+            UpdateProjectEmployees(selectedEmployee, projectToUpdate);
+            PopulateAssignedEmployeeData(projectToUpdate);
             return View(projectToUpdate);
         }
 
-        private void UpdateProjectEmployee(string[] selectedEmployee, Project projectToUpdate)
+        private void UpdateProjectEmployees(string[] selectedEmployee, Project projectToUpdate)
         {
             if (selectedEmployee == null)
             {
@@ -188,12 +189,12 @@ namespace ProjectAndEmployees.Controllers
                 return;
             }
 
-            var selectedEmployeeHS = new HashSet<string>(selectedEmployee);
+            var selectedEmployeesHS = new HashSet<string>(selectedEmployee);
             var projectEmployees = new HashSet<int>
                 (projectToUpdate.Enrollments.Select(c => c.Employee.Id));
             foreach (var employee in _context.Employees)
             {
-                if (selectedEmployeeHS.Contains(employee.Id.ToString()))
+                if (selectedEmployeesHS.Contains(employee.Id.ToString()))
                 {
                     if (!projectEmployees.Contains(employee.Id))
                     {
@@ -211,7 +212,6 @@ namespace ProjectAndEmployees.Controllers
                 }
             }
         }
-
 
         /*
         private void UpdateProjectEmployee(string[] selectedEmployee, Project projectToUpdate)

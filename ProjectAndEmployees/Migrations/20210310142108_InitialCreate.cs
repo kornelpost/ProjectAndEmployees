@@ -27,7 +27,7 @@ namespace ProjectAndEmployees.Migrations
                 columns: table => new
                 {
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -36,41 +36,16 @@ namespace ProjectAndEmployees.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmployeesProject",
-                columns: table => new
-                {
-                    EmployeesId = table.Column<int>(type: "int", nullable: false),
-                    ProjectsProjectId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmployeesProject", x => new { x.EmployeesId, x.ProjectsProjectId });
-                    table.ForeignKey(
-                        name: "FK_EmployeesProject_Employee_EmployeesId",
-                        column: x => x.EmployeesId,
-                        principalTable: "Employee",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EmployeesProject_Project_ProjectsProjectId",
-                        column: x => x.ProjectsProjectId,
-                        principalTable: "Project",
-                        principalColumn: "ProjectId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Enrollment",
                 columns: table => new
                 {
-                    EnrollmentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    EnrollmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Enrollment", x => x.EnrollmentId);
+                    table.PrimaryKey("PK_Enrollment", x => new { x.EmployeeId, x.ProjectId });
                     table.ForeignKey(
                         name: "FK_Enrollment_Employee_EmployeeId",
                         column: x => x.EmployeeId,
@@ -86,16 +61,6 @@ namespace ProjectAndEmployees.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeesProject_ProjectsProjectId",
-                table: "EmployeesProject",
-                column: "ProjectsProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Enrollment_EmployeeId",
-                table: "Enrollment",
-                column: "EmployeeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Enrollment_ProjectId",
                 table: "Enrollment",
                 column: "ProjectId");
@@ -103,9 +68,6 @@ namespace ProjectAndEmployees.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "EmployeesProject");
-
             migrationBuilder.DropTable(
                 name: "Enrollment");
 

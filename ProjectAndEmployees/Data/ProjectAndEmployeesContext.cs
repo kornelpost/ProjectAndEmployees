@@ -19,6 +19,9 @@ namespace ProjectAndEmployees.Data
             modelBuilder.Entity<Project>().ToTable("Project");
             modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
             modelBuilder.Entity<Employees>().ToTable("Employee");
+
+            modelBuilder.Entity<Enrollment>()
+                .HasKey(c => new { c.EmployeeId, c.ProjectId });
         }
     }
 }
