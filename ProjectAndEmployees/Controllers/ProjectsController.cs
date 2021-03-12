@@ -140,6 +140,7 @@ namespace ProjectAndEmployees.Controllers
                 });
             }
             ViewData["Employees"] = viewModel;
+            
         }
 
         // POST: Projects/Edit/5
@@ -156,6 +157,8 @@ namespace ProjectAndEmployees.Controllers
                 .Include(i => i.Enrollments)
                     .ThenInclude(i => i.Employee)
                 .FirstOrDefaultAsync(m => m.ProjectId == id);
+
+            
 
             if (await TryUpdateModelAsync<Project>(
                 projectToUpdate,
@@ -183,11 +186,12 @@ namespace ProjectAndEmployees.Controllers
 
         private void UpdateProjectEmployees(string[] selectedEmployee, Project projectToUpdate)
         {
-            if (selectedEmployee == null)
+                        if (selectedEmployee == null)
             {
                 projectToUpdate.Enrollments = new List<Enrollment>();
                 return;
             }
+
 
             var selectedEmployeesHS = new HashSet<string>(selectedEmployee);
             var projectEmployees = new HashSet<int>

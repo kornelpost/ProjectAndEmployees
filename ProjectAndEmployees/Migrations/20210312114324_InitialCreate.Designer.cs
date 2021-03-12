@@ -10,7 +10,7 @@ using ProjectAndEmployees.Data;
 namespace ProjectAndEmployees.Migrations
 {
     [DbContext(typeof(ProjectAndEmployeesContext))]
-    [Migration("20210310142108_InitialCreate")]
+    [Migration("20210312114324_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
