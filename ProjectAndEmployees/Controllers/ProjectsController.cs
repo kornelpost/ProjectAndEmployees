@@ -23,7 +23,6 @@ namespace ProjectAndEmployees.Controllers
         // GET: Projects
         public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
-
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
@@ -86,8 +85,6 @@ namespace ProjectAndEmployees.Controllers
         }
 
         // POST: Projects/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProjectId,Title,Description")] Project project)
@@ -100,9 +97,6 @@ namespace ProjectAndEmployees.Controllers
             }
             return View(project);
         }
-
-
-
 
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -140,7 +134,6 @@ namespace ProjectAndEmployees.Controllers
                 });
             }
             ViewData["Employees"] = viewModel;
-            
         }
 
         // POST: Projects/Edit/5
@@ -157,8 +150,6 @@ namespace ProjectAndEmployees.Controllers
                 .Include(i => i.Enrollments)
                     .ThenInclude(i => i.Employee)
                 .FirstOrDefaultAsync(m => m.ProjectId == id);
-
-            
 
             if (await TryUpdateModelAsync<Project>(
                 projectToUpdate,
@@ -192,10 +183,10 @@ namespace ProjectAndEmployees.Controllers
                 return;
             }
 
-
             var selectedEmployeesHS = new HashSet<string>(selectedEmployee);
             var projectEmployees = new HashSet<int>
                 (projectToUpdate.Enrollments.Select(c => c.Employee.Id));
+
             foreach (var employee in _context.Employees)
             {
                 if (selectedEmployeesHS.Contains(employee.Id.ToString()))
@@ -216,78 +207,6 @@ namespace ProjectAndEmployees.Controllers
                 }
             }
         }
-
-        /*
-        private void UpdateProjectEmployee(string[] selectedEmployee, Project projectToUpdate)
-        {
-            if (selectedEmployee == null)
-            {
-                projectToUpdate.Enrollments = new List<Enrollment>();
-                return;
-            }
-
-            var selectedEmployeesHS = new HashSet<string>(selectedEmployee);
-            var projectEmployee = new HashSet<int>
-                (projectToUpdate.Enrollments.Select(c => c.Employee.Id));
-            foreach (var employee in _context.Employees)
-            {
-                if (selectedEmployeesHS.Contains(employee.Id.ToString()))
-                {
-                    if (!projectEmployee.Contains(employee.Id))
-                    {
-                        projectToUpdate.Enrollments.Add(new Enrollment { ProjectId = projectToUpdate.ProjectId, EmployeeId = employee.Id });
-                    }
-                }
-                else
-                {
-
-                    if (projectEmployee.Contains(employee.Id))
-                    {
-                        Enrollment employeeToRemove = projectToUpdate.Enrollments.FirstOrDefault(i => i.EmployeeId == employee.Id);
-                        _context.Remove(employeeToRemove);
-                    }
-                }
-            }
-        }
-
-        */
-
-
-        /*
-        // POST: Projects/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProjectId,Title,Description")] Project project)
-        {
-            if (id != project.ProjectId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(project);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProjectExists(project.ProjectId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(project);
-        }
-
-        */
 
         // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -313,8 +232,12 @@ namespace ProjectAndEmployees.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
+            Project project = await _context.Projects
+                .Include(i => i.Enrollments)
+                .SingleAsync(i => i.ProjectId == id);
+
             _context.Projects.Remove(project);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
